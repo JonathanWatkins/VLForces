@@ -22,21 +22,27 @@ int main()
     
     int Nints =  (rhi-rlo)/rint;
     
-    double rcut = 3.33;
+    double rcut_boost = 6.0;
+	double rcut_poly = 3.33;
     
     std::ofstream results("fr.txt");
 
     results << "r\tboost_fr\tpoly_fr\n"; 
-
+	
+	
     for (int i = 0; i <= Nints; ++i)
     {
        
         double r = rlo + i * rint;
         
-        double boost_fr = r < rcut ? boost::math::cyl_bessel_k(1,  r/lambda) : 0;
-	
-        double poly_fr = r < rcut ? 1.0/r + r*r*r/rcut/rcut/rcut/rcut - 2*r/rcut/rcut : 0;
-
+        double boost_fr = r < rcut_boost ? boost::math::cyl_bessel_k(1,  r/lambda) : 0;
+	    
+		double roverrcut=r/rcut_poly;
+		
+        //double poly_fr = r < rcut_poly ? 1.0/r + r*r*r/rcut_poly/rcut_poly/rcut_poly/rcut_poly - 2.0*r/rcut_poly/rcut_poly : 0;
+        double poly_fr = r < rcut_poly ? 1.0/r + roverrcut * roverrcut/r * (roverrcut*roverrcut - 2.0) : 0;
+		
+		
 		results << r << "\t" << boost_fr << "\t\t" << poly_fr << std::endl;
 
     }
